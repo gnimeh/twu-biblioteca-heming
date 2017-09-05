@@ -7,15 +7,21 @@ public class Biblioteca {
 
     PrintStream printStream;
     List<Book> bookList;
+    Menu menu;
 
-    public Biblioteca(PrintStream printStream, List<Book> bookList) {
+    public Biblioteca(PrintStream printStream, List<Book> bookList,Menu menu) {
         this.printStream = printStream;
         this.bookList = bookList;
+        this.menu = menu;
     }
 
     public void start() {
         welcome();
-        bookList();
+        showMenu();
+    }
+
+    public void showMenu(){
+        printStream.println(menu.getMenuStr());
     }
 
     public void bookList() {

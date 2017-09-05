@@ -3,6 +3,8 @@ package com.twu.biblioteca;
 
 import com.twu.model.Biblioteca;
 import com.twu.model.Book;
+import com.twu.model.Menu;
+import com.twu.model.Option;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,16 +31,14 @@ public class ExampleTest {
 
     @Test
     public void should_show_welcome_message(){
-        bookList = buildBookList();
-        Biblioteca biblioteca = new Biblioteca(printStream,bookList);
+        Biblioteca biblioteca = buildBibloteca();
         biblioteca.welcome();
         verify(printStream).println("Welcome to Biblioteca!");
     }
 
     @Test
     public void should_display_book_list(){
-        bookList = buildBookList();
-        Biblioteca biblioteca = new Biblioteca(printStream,bookList);
+        Biblioteca biblioteca = buildBibloteca();
         biblioteca.bookList();
         String bookListStr = "Book name: book1 Author:author1 Published in 2000\n" +
                 "Book name: book2 Author:author2 Published in 2001\n" +
@@ -46,11 +46,23 @@ public class ExampleTest {
         verify(printStream).println(bookListStr);
     }
 
-    private List<Book> buildBookList(){
+    @Test
+    public void should_show_menu(){
+        Biblioteca biblioteca = buildBibloteca();
+        biblioteca.showMenu();
+        verify(printStream).println("List Books");
+    }
+
+    private Biblioteca buildBibloteca(){
         List<Book> bookList = new ArrayList<>();
         bookList.add(new Book("book1","author1",2000));
         bookList.add(new Book("book2","author2",2001));
         bookList.add(new Book("book3","author3",2002));
-        return bookList;
+        List<Option> options = new ArrayList<>();
+        options.add(new Option("List Books"));
+        Menu menu = new Menu(options);
+        Biblioteca biblioteca = new Biblioteca(printStream,bookList,menu);
+        return biblioteca;
     }
+
 }
