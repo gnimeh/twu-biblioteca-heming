@@ -40,14 +40,17 @@ public class ExampleTest {
         bookList = buildBookList();
         Biblioteca biblioteca = new Biblioteca(printStream,bookList);
         biblioteca.bookList();
-        verify(printStream).println("book1\nbook2\nbook3\n");
+        String bookListStr = "Book name: book1 Author:author1 Published in 2000\n" +
+                "Book name: book2 Author:author2 Published in 2001\n" +
+                "Book name: book3 Author:author3 Published in 2002\n";
+        verify(printStream).println(bookListStr);
     }
 
     private List<Book> buildBookList(){
         List<Book> bookList = new ArrayList<>();
-        bookList.add(new Book("book1"));
-        bookList.add(new Book("book2"));
-        bookList.add(new Book("book3"));
+        bookList.add(new Book("book1","author1",2000));
+        bookList.add(new Book("book2","author2",2001));
+        bookList.add(new Book("book3","author3",2002));
         return bookList;
     }
 }
