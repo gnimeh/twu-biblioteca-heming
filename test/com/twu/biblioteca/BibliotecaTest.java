@@ -8,15 +8,14 @@ import com.twu.model.Option;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.Console;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-public class ExampleTest {
+public class BibliotecaTest {
 
     private PrintStream printStream;
     private List<Book> bookList;
