@@ -4,23 +4,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Menu {
-    List<Option> options;
+    List<String> options;
 
-    public Menu(List<Option> options) {
+    public Menu(List<String> options) {
         this.options = options;
     }
 
     public String getMenuStr() {
         final String[] menuStr = {""};
-        options.forEach(option -> menuStr[0] += option.getTitle());
+        menuStr[0] += "Menu:\n--------------------\n";
+        options.forEach(option -> menuStr[0] += option + "\n");
         return menuStr[0];
     }
 
-    public Option getOptionByTitle(String input) {
-        List<Option> matchOption = options.stream().filter(option1 -> option1.getTitle().equals(input))
+    public String getOptionByTitle(String input) {
+        List<String> matchOption = options.stream().filter(option1 -> option1.equals(input))
                 .collect(Collectors.toList());
         if (matchOption.size() <= 0) {
-            return new Option("invalid");
+            return "invalid";
         }
         return matchOption.get(0);
     }

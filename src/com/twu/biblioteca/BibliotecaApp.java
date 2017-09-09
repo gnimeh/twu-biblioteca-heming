@@ -3,7 +3,6 @@ package com.twu.biblioteca;
 import com.twu.model.Biblioteca;
 import com.twu.model.Book;
 import com.twu.model.Menu;
-import com.twu.model.Option;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -20,8 +19,9 @@ public class BibliotecaApp {
     }
 
     private static Menu configMenu() {
-        List<Option> options = new ArrayList<>();
-        options.add(new Option("List Books"));
+        List<String> options = new ArrayList<>();
+        options.add("List Books");
+        options.add("quit");
         Menu menu = new Menu(options);
         return menu;
     }

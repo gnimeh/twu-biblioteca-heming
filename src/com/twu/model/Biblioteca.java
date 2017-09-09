@@ -13,7 +13,7 @@ public class Biblioteca {
     Menu menu;
     boolean isQuit = false;
 
-    public Biblioteca(PrintStream printStream, List<Book> bookList,Menu menu) {
+    public Biblioteca(PrintStream printStream, List<Book> bookList, Menu menu) {
         this.printStream = printStream;
         this.bookList = bookList;
         this.menu = menu;
@@ -23,23 +23,28 @@ public class Biblioteca {
         welcome();
         while (!isQuit) {
             showMenu();
-            Option option = menu.getOptionByTitle(getInput());
-            isQuit = option.operation();
+            String option = menu.getOptionByTitle(getInput());
+            isQuit = operation(option).isQuit;
         }
     }
 
-    public void showMenu(){
+    private Biblioteca operation(String option) {
+        return this.invalid(option)
+                .bookList(option)
+                .quit(option);
+    }
+
+    public void showMenu() {
         printStream.println(menu.getMenuStr());
-
     }
 
-    public void bookList() {
-        String bookListStr = "";
-        for (Book book :
-                bookList) {
-            bookListStr += book.toString();
+    public Biblioteca bookList(String option) {
+        if (option.equals("List Books")) {
+            final String[] bookListStr = {""};
+            bookList.forEach(book -> bookListStr[0] += book.toString());
+            printStream.println(bookListStr[0]);
         }
-        printStream.println(bookListStr);
+        return this;
     }
 
     public String getInput() {
@@ -47,7 +52,23 @@ public class Biblioteca {
         String input = scanner.nextLine();
         return input;
     }
+
     public void welcome() {
         printStream.println("Welcome to Biblioteca!");
     }
+
+    public Biblioteca invalid(String option) {
+        if (option.equals("invalid")) {
+            printStream.println("Select a valid option!");
+        }
+        return this;
+    }
+
+    public Biblioteca quit(String option) {
+        if (option.equals("quit")) {
+            this.isQuit = true;
+        }
+        return this;
+    }
+
 }
