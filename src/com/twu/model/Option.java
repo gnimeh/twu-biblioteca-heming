@@ -9,4 +9,8 @@ public class Option {
     public String getTitle() {
         return title;
     }
+
+    public Boolean operation() {
+        return true;
+    }
 }

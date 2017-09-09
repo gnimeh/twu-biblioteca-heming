@@ -12,6 +12,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -50,6 +52,22 @@ public class BibliotecaTest {
         Biblioteca biblioteca = buildBibloteca();
         biblioteca.showMenu();
         verify(printStream).println("List Books");
+    }
+
+    @Test
+    public void should_not_get_option_with_invalid_title() {
+        List<Option> options = new ArrayList<>();
+        options.add(new Option("List Books"));
+        Menu menu = new Menu(options);
+        assertThat(menu.getOptionByTitle("else").getTitle(), is("invalid"));
+    }
+
+    @Test
+    public void should_get_option_by_title() {
+        List<Option> options = new ArrayList<>();
+        options.add(new Option("List Books"));
+        Menu menu = new Menu(options);
+        assert menu.getOptionByTitle("List Books").getTitle().equals("List Books");
     }
 
     private Biblioteca buildBibloteca(){
