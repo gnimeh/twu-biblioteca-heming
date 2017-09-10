@@ -22,7 +22,8 @@ public class BibliotecaApp {
         List<String> options = new ArrayList<>();
         options.add("List Books");
         options.add("Checkout");
-        options.add("quit");
+        options.add("Return");
+        options.add("Quit");
         Menu menu = new Menu(options);
         return menu;
     }

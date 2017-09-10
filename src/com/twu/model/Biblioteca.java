@@ -10,7 +10,8 @@ public class Biblioteca {
     PrintStream printStream;
     List<Book> bookList;
     Menu menu;
-    boolean isQuit = false;
+    boolean isQuit;
+    Scanner scanner;
 
     public boolean getIsQuit() {
         return this.isQuit;
@@ -21,6 +22,8 @@ public class Biblioteca {
         this.printStream = printStream;
         this.bookList = bookList;
         this.menu = menu;
+        this.isQuit = false;
+        this.scanner = new Scanner(System.in);
     }
 
     public void start() {
@@ -36,6 +39,7 @@ public class Biblioteca {
         return this.invalid(option)
                 .bookList(option)
                 .checkout(option)
+                .returnBack(option)
                 .quit(option);
     }
 
@@ -46,14 +50,17 @@ public class Biblioteca {
     public Biblioteca bookList(String option) {
         if (option.equals("List Books")) {
             final String[] bookListStr = {""};
-            bookList.forEach(book -> bookListStr[0] += book.toString());
+            bookList.forEach(book -> {
+                if (!book.isCheckout) {
+                    bookListStr[0] += book.toString();
+                }
+            });
             printStream.println(bookListStr[0]);
         }
         return this;
     }
 
     public String getInput() {
-        Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         return input;
     }
@@ -70,7 +77,7 @@ public class Biblioteca {
     }
 
     public Biblioteca quit(String option) {
-        if (option.equals("quit")) {
+        if (option.equals("Quit")) {
             this.isQuit = true;
         }
         return this;
@@ -79,17 +86,34 @@ public class Biblioteca {
     public Biblioteca checkout(String option) {
         if (option.equals("Checkout")) {
             printStream.println("Please input the book name you what to checkout");
-            Scanner scanner = new Scanner(System.in);
             String bookName = scanner.nextLine();
-            List<Book> checkoutBook = bookList.stream().filter(curBook ->
-                    curBook.getName().equals(bookName)).collect(Collectors.toList());
+            List<Book> checkoutBook = bookList.stream()
+                    .filter(curBook -> curBook.getName().equals(bookName) & !curBook.isCheckout)
+                    .collect(Collectors.toList());
             if (checkoutBook.size() <= 0) {
                 printStream.println("That book is not available");
             } else {
-                bookList.remove(checkoutBook.get(0));
+                checkoutBook.get(0).checkout();
                 printStream.println("Thank you! Enjoy the book");
             }
         }
-        return this;
+        return this.bookList("bookList");
+    }
+
+    public Biblioteca returnBack(String option) {
+        if (option.equals("Return")) {
+            printStream.println("Please input the book name you what to return");
+            String bookName = scanner.nextLine();
+            List<Book> checkoutBook = bookList.stream()
+                    .filter(curBook -> curBook.getName().equals(bookName) & curBook.isCheckout)
+                    .collect(Collectors.toList());
+            if (checkoutBook.size() <= 0) {
+                printStream.println("That is not a valid book to return");
+            } else {
+                checkoutBook.get(0).returnBack();
+                printStream.println("Thank you for returning the book.");
+            }
+        }
+        return this.bookList("List Books");
     }
 }
