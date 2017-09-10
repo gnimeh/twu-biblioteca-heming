@@ -14,4 +14,8 @@ public class Book {
                 +" Author:" + author
                 + " Published in " + publishedYear +"\n";
     }
+
+    public String getName() {
+        return this.name;
+    }
 }

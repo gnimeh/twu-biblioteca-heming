@@ -21,6 +21,7 @@ public class BibliotecaApp {
     private static Menu configMenu() {
         List<String> options = new ArrayList<>();
         options.add("List Books");
+        options.add("Checkout");
         options.add("quit");
         Menu menu = new Menu(options);
         return menu;

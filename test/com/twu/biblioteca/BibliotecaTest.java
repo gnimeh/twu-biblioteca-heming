@@ -50,7 +50,7 @@ public class BibliotecaTest {
     public void should_show_menu(){
         Biblioteca biblioteca = buildBibloteca();
         biblioteca.showMenu();
-        verify(printStream).println("List Books");
+        verify(printStream).println("Menu:\n--------------------\nList Books\n");
     }
 
     @Test
@@ -66,7 +66,14 @@ public class BibliotecaTest {
         List<String> options = new ArrayList<>();
         options.add("List Books");
         Menu menu = new Menu(options);
-        assert menu.getOptionByTitle("List Books").equals("List Books");
+        assertThat(menu.getOptionByTitle("List Books"), is("List Books"));
+    }
+
+    @Test
+    public void should_quit() {
+        Biblioteca biblioteca = buildBibloteca();
+        biblioteca.quit("quit");
+        assertThat(biblioteca.getIsQuit(), is(true));
     }
 
     private Biblioteca buildBibloteca(){

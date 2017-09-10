@@ -1,17 +1,21 @@
 package com.twu.model;
 
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Biblioteca {
 
     PrintStream printStream;
-    InputStreamReader inputStreamReader;
     List<Book> bookList;
     Menu menu;
     boolean isQuit = false;
+
+    public boolean getIsQuit() {
+        return this.isQuit;
+    }
+
 
     public Biblioteca(PrintStream printStream, List<Book> bookList, Menu menu) {
         this.printStream = printStream;
@@ -31,6 +35,7 @@ public class Biblioteca {
     private Biblioteca operation(String option) {
         return this.invalid(option)
                 .bookList(option)
+                .checkout(option)
                 .quit(option);
     }
 
@@ -71,4 +76,20 @@ public class Biblioteca {
         return this;
     }
 
+    public Biblioteca checkout(String option) {
+        if (option.equals("Checkout")) {
+            printStream.println("Please input the book name you what to checkout");
+            Scanner scanner = new Scanner(System.in);
+            String bookName = scanner.nextLine();
+            List<Book> checkoutBook = bookList.stream().filter(curBook ->
+                    curBook.getName().equals(bookName)).collect(Collectors.toList());
+            if (checkoutBook.size() <= 0) {
+                printStream.println("That book is not available");
+            } else {
+                bookList.remove(checkoutBook.get(0));
+                printStream.println("Thank you! Enjoy the book");
+            }
+        }
+        return this;
+    }
 }
