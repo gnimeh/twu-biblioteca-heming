@@ -1,12 +1,11 @@
 package com.twu.model;
 
-import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Biblioteca {
 
-    PrintStream printStream;
     List<Book> bookList;
     Menu menu;
     boolean isQuit;
@@ -21,20 +20,34 @@ public class Biblioteca {
         return this.isQuit;
     }
 
-
-    public Biblioteca(List<Book> bookList, Menu menu) {
-        this.bookList = bookList;
-        this.menu = menu;
+    public Biblioteca() {
+        this.bookList = configBookList();
+        this.menu = configMenu();
         this.isQuit = false;
         this.isShowMenu = true;
         this.isBookList = false;
         this.isReturn = false;
         this.isCheckout = false;
         this.output = "";
+        showMenu();
     }
 
-    public void showMenu() {
-        output = menu.getMenuStr();
+    private static Menu configMenu() {
+        List<String> options = new ArrayList<>();
+        options.add("List Books");
+        options.add("Checkout");
+        options.add("Return");
+        options.add("Quit");
+        Menu menu = new Menu(options);
+        return menu;
+    }
+
+    private static List<Book> configBookList() {
+        List<Book> bookList = new ArrayList<>();
+        bookList.add(new Book("book1", "author1", 2000));
+        bookList.add(new Book("book2", "author2", 2001));
+        bookList.add(new Book("book3", "author3", 2002));
+        return bookList;
     }
 
     public void bookList() {
@@ -48,15 +61,12 @@ public class Biblioteca {
         output = bookListStr[0];
     }
 
-    public String invalid() {
-        return "Select a valid option!";
+    public List<Book> getBookList() {
+        return bookList;
     }
 
-    public Biblioteca quit(String option) {
-        if (option.equals("Quit")) {
-            this.isQuit = true;
-        }
-        return this;
+    public void showMenu() {
+        output += menu.getMenuStr();
     }
 
     public void checkout() {
@@ -64,16 +74,34 @@ public class Biblioteca {
         this.isCheckout = true;
     }
 
+    public void invalid() {
+        output = "Select a valid option!";
+    }
+
+    public void quit() {
+        this.isQuit = true;
+    }
+
+    public void returnBack() {
+        output = "Please input the book name you what to return";
+        isReturn = true;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
     public void checkout(String name) {
         List<Book> checkoutBook = bookList.stream()
                 .filter(curBook -> curBook.getName().equals(name) & !curBook.isCheckout)
                 .collect(Collectors.toList());
         if (checkoutBook.size() <= 0) {
-            printStream.println("That book is not available");
+            output = "That book is not available";
         } else {
             checkoutBook.get(0).checkout();
-            printStream.println("Thank you! Enjoy the book");
+            output = "Thank you! Enjoy the book";
         }
+        isCheckout = false;
     }
 
     public void returnBack(String name) {
@@ -86,22 +114,16 @@ public class Biblioteca {
             checkoutBook.get(0).returnBack();
             output = "Thank you for returning the book.";
         }
-    }
-
-    public void returnBack() {
-        output = "Please input the book name you what to return";
-        isReturn = true;
-    }
-
-    public String getOutput() {
-        return output;
+        isReturn = false;
     }
 
     public void operate(String input) {
         if (isCheckout) {
             checkout(input);
+            showMenu();
         } else if (isReturn) {
             returnBack(input);
+            showMenu();
         } else {
             optionOperate(input);
         }
@@ -110,7 +132,7 @@ public class Biblioteca {
     public void optionOperate(String option) {
         switch (option) {
             case "Quit": {
-                isQuit = true;
+                quit();
                 break;
             }
             case "List Books": {
