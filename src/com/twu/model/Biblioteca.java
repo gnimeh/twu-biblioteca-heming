@@ -2,7 +2,6 @@ package com.twu.model;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Biblioteca {
@@ -11,69 +10,46 @@ public class Biblioteca {
     List<Book> bookList;
     Menu menu;
     boolean isQuit;
-    Scanner scanner;
+    boolean isShowMenu;
+    boolean isBookList;
+    boolean isCheckout;
+    boolean isReturn;
+
+    private String output;
 
     public boolean getIsQuit() {
         return this.isQuit;
     }
 
 
-    public Biblioteca(PrintStream printStream, List<Book> bookList, Menu menu) {
-        this.printStream = printStream;
+    public Biblioteca(List<Book> bookList, Menu menu) {
         this.bookList = bookList;
         this.menu = menu;
         this.isQuit = false;
-        this.scanner = new Scanner(System.in);
-    }
-
-    public void start() {
-        welcome();
-        while (!isQuit) {
-            showMenu();
-            String option = menu.getOptionByTitle(getInput());
-            isQuit = operation(option).isQuit;
-        }
-    }
-
-    private Biblioteca operation(String option) {
-        return this.invalid(option)
-                .bookList(option)
-                .checkout(option)
-                .returnBack(option)
-                .quit(option);
+        this.isShowMenu = true;
+        this.isBookList = false;
+        this.isReturn = false;
+        this.isCheckout = false;
+        this.output = "";
     }
 
     public void showMenu() {
-        printStream.println(menu.getMenuStr());
+        output = menu.getMenuStr();
     }
 
-    public Biblioteca bookList(String option) {
-        if (option.equals("List Books")) {
-            final String[] bookListStr = {""};
-            bookList.forEach(book -> {
-                if (!book.isCheckout) {
-                    bookListStr[0] += book.toString();
-                }
-            });
-            printStream.println(bookListStr[0]);
-        }
-        return this;
+    public void bookList() {
+        isBookList = true;
+        final String[] bookListStr = {""};
+        bookList.forEach(book -> {
+            if (!book.isCheckout) {
+                bookListStr[0] += book.toString();
+            }
+        });
+        output = bookListStr[0];
     }
 
-    public String getInput() {
-        String input = scanner.nextLine();
-        return input;
-    }
-
-    public void welcome() {
-        printStream.println("Welcome to Biblioteca!");
-    }
-
-    public Biblioteca invalid(String option) {
-        if (option.equals("invalid")) {
-            printStream.println("Select a valid option!");
-        }
-        return this;
+    public String invalid() {
+        return "Select a valid option!";
     }
 
     public Biblioteca quit(String option) {
@@ -83,37 +59,77 @@ public class Biblioteca {
         return this;
     }
 
-    public Biblioteca checkout(String option) {
-        if (option.equals("Checkout")) {
-            printStream.println("Please input the book name you what to checkout");
-            String bookName = scanner.nextLine();
-            List<Book> checkoutBook = bookList.stream()
-                    .filter(curBook -> curBook.getName().equals(bookName) & !curBook.isCheckout)
-                    .collect(Collectors.toList());
-            if (checkoutBook.size() <= 0) {
-                printStream.println("That book is not available");
-            } else {
-                checkoutBook.get(0).checkout();
-                printStream.println("Thank you! Enjoy the book");
-            }
-        }
-        return this.bookList("bookList");
+    public void checkout() {
+        output = "Please input the book name you what to checkout";
+        this.isCheckout = true;
     }
 
-    public Biblioteca returnBack(String option) {
-        if (option.equals("Return")) {
-            printStream.println("Please input the book name you what to return");
-            String bookName = scanner.nextLine();
-            List<Book> checkoutBook = bookList.stream()
-                    .filter(curBook -> curBook.getName().equals(bookName) & curBook.isCheckout)
-                    .collect(Collectors.toList());
-            if (checkoutBook.size() <= 0) {
-                printStream.println("That is not a valid book to return");
-            } else {
-                checkoutBook.get(0).returnBack();
-                printStream.println("Thank you for returning the book.");
-            }
+    public void checkout(String name) {
+        List<Book> checkoutBook = bookList.stream()
+                .filter(curBook -> curBook.getName().equals(name) & !curBook.isCheckout)
+                .collect(Collectors.toList());
+        if (checkoutBook.size() <= 0) {
+            printStream.println("That book is not available");
+        } else {
+            checkoutBook.get(0).checkout();
+            printStream.println("Thank you! Enjoy the book");
         }
-        return this.bookList("List Books");
+    }
+
+    public void returnBack(String name) {
+        List<Book> checkoutBook = bookList.stream()
+                .filter(curBook -> curBook.getName().equals(name) & curBook.isCheckout)
+                .collect(Collectors.toList());
+        if (checkoutBook.size() <= 0) {
+            output = "That is not a valid book to return";
+        } else {
+            checkoutBook.get(0).returnBack();
+            output = "Thank you for returning the book.";
+        }
+    }
+
+    public void returnBack() {
+        output = "Please input the book name you what to return";
+        isReturn = true;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void operate(String input) {
+        if (isCheckout) {
+            checkout(input);
+        } else if (isReturn) {
+            returnBack(input);
+        } else {
+            optionOperate(input);
+        }
+    }
+
+    public void optionOperate(String option) {
+        switch (option) {
+            case "Quit": {
+                isQuit = true;
+                break;
+            }
+            case "List Books": {
+                bookList();
+                break;
+            }
+            case "Return": {
+                returnBack();
+                break;
+            }
+            case "Checkout": {
+                checkout();
+                break;
+            }
+            default: {
+                invalid();
+                break;
+            }
+
+        }
     }
 }
