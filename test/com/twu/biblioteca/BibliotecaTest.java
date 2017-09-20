@@ -30,7 +30,7 @@ public class BibliotecaTest {
     public void should_show_menu() {
         Biblioteca biblioteca = new Biblioteca();
         biblioteca.showMenu();
-        assertThat(biblioteca.getOutput(), Is.is("Menu:\n--------------------\nList Books\nCheckout\nReturn\nQuit\n"));
+        assertThat(biblioteca.getOutput(), Is.is("Menu:\n--------------------\nList Books\nList Movies\nCheckout\nReturn\nQuit\n"));
     }
 
     @Test
@@ -58,14 +58,14 @@ public class BibliotecaTest {
     @Test
     public void should_checkout_book_successful() {
         Biblioteca biblioteca = new Biblioteca();
-        biblioteca.checkout("book1");
+        biblioteca.checkoutBook("book1");
         assertThat(biblioteca.getOutput(), is("Thank you! Enjoy the book"));
     }
 
     @Test
     public void should_checkout_book_failed() {
         Biblioteca biblioteca = new Biblioteca();
-        biblioteca.checkout("book4");
+        biblioteca.checkoutBook("book4");
         assertThat(biblioteca.getOutput(), is("That book is not available"));
     }
 
