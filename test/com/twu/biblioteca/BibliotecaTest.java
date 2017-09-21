@@ -10,11 +10,6 @@ import static org.junit.Assert.assertThat;
 
 public class BibliotecaTest {
 
-    @Test
-    public void should_show_welcome_message() {
-        Biblioteca biblioteca = new Biblioteca();
-        assertThat(biblioteca.getOutput(), Is.is("Welcome to Biblioteca!\n"));
-    }
 
     @Test
     public void should_display_book_list() {
@@ -29,8 +24,8 @@ public class BibliotecaTest {
     @Test
     public void should_show_menu() {
         Biblioteca biblioteca = new Biblioteca();
-        biblioteca.showMenu();
-        assertThat(biblioteca.getOutput(), Is.is("Menu:\n--------------------\nList Books\nList Movies\nCheckout\nReturn\nQuit\n"));
+        assertThat(biblioteca.getOutput(), Is.is("Menu:\n--------------------" +
+                "\nList Books\nList Movies\nLogin\nCheckout\nReturn\nQuit\n"));
     }
 
     @Test
@@ -52,7 +47,8 @@ public class BibliotecaTest {
     public void should_checkout_book() {
         Biblioteca biblioteca = new Biblioteca();
         biblioteca.optionOperate("Checkout");
-        assertThat(biblioteca.getOutput(), is("Please input the book name you what to checkout"));
+        biblioteca.checkout("Book");
+        assertThat(biblioteca.getOutput(), is("Input the book name:"));
     }
 
     @Test
@@ -73,21 +69,24 @@ public class BibliotecaTest {
     public void should_return_book() {
         Biblioteca biblioteca = new Biblioteca();
         biblioteca.optionOperate("Return");
-        assertThat(biblioteca.getOutput(), is("Please input the book name you what to return"));
+        biblioteca.returnBack("Book");
+        assertThat(biblioteca.getOutput(), is("Input the book name:"));
     }
 
     @Test
     public void should_return_book_successful() {
         Biblioteca biblioteca = new Biblioteca();
         biblioteca.getBookList().get(0).checkout();
-        biblioteca.returnBack("book1");
+        biblioteca.returnBack("book");
+        biblioteca.returnBook("book1");
         assertThat(biblioteca.getOutput(), is("Thank you for returning the book."));
     }
 
     @Test
     public void should_return_book_failed() {
         Biblioteca biblioteca = new Biblioteca();
-        biblioteca.returnBack("book1");
+        biblioteca.returnBack("Book");
+        biblioteca.returnBook("book1");
         assertThat(biblioteca.getOutput(), is("That is not a valid book to return"));
     }
 

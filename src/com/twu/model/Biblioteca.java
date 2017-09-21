@@ -8,15 +8,17 @@ public class Biblioteca {
 
     List<Movie> movieList;
     private List<Book> bookList;
+    private List<User> userList;
     private Menu menu;
     private boolean isQuit;
     private boolean isCheckout;
     private boolean isReturn;
     private boolean isMovie;
     private boolean isBook;
-
+    private User loginUser;
     private String output;
     private boolean hasName;
+    private boolean hasUserName;
 
     public boolean getIsQuit() {
         return this.isQuit;
@@ -25,6 +27,7 @@ public class Biblioteca {
     public Biblioteca() {
         this.bookList = configBookList();
         this.movieList = configMovieList();
+        this.userList = configUserList();
         this.menu = configMenu();
         this.isQuit = false;
         this.isReturn = false;
@@ -32,6 +35,7 @@ public class Biblioteca {
         this.isMovie = false;
         this.isBook = false;
         this.hasName = false;
+        this.hasUserName = false;
         this.output = "";
         showMenu();
     }
@@ -40,6 +44,7 @@ public class Biblioteca {
         List<String> options = new ArrayList<>();
         options.add("List Books");
         options.add("List Movies");
+        options.add("Login");
         options.add("Checkout");
         options.add("Return");
         options.add("Quit");
@@ -60,6 +65,40 @@ public class Biblioteca {
         movieList.add(new Movie("movie2", "director2", 2001, 2));
         movieList.add(new Movie("movie3", "director3", 2002, 3));
         return movieList;
+    }
+
+    private static List<User> configUserList() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("user1", "email1", 100l, "100-1000", "password"));
+        userList.add(new User("user2", "email2", 200l, "200-2000", "password"));
+        userList.add(new User("user3", "email3", 300l, "300-3000", "password"));
+        return userList;
+    }
+
+    private void login(String libraryNumber, String password) {
+        try {
+            User loginUser = userList.stream()
+                    .filter(user -> user.matchLogin(libraryNumber, password))
+                    .collect(Collectors.toList())
+                    .get(0);
+            this.loginUser = loginUser;
+        } catch (Exception e) {
+            wrongLogin();
+        }
+
+    }
+
+    private void wrongLogin() {
+        output = "Login failed!Please check your library number and password.Try again.";
+        userLoginOutput();
+    }
+
+    private void userLoginOutput() {
+        if (hasUserName) {
+            output = "Password:";
+        } else {
+            output = "Library Number:";
+        }
     }
 
     public void bookList() {
